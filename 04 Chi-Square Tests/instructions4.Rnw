@@ -1,0 +1,220 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{verbatim}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+
+\usepackage{titlesec}
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\hypersetup{
+    colorlinks,
+    urlcolor=[rgb]{0,0,1},
+    citecolor=[rgb]{1,0,0},
+    linkcolor=[rgb]{0,.2,.2},
+    pdfborder={0 0 0}    
+}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist 
+\newenvironment{mdh1}
+    %Begin environment
+    {
+        \begin{changemargin}{0cm}{0cm}
+        \begin{bfseries}
+        \setlength{\parskip}{1.2em}
+        \fontfamily{lmss}
+        \fontsize{1.2cm}{1em}
+        \selectfont
+    }
+    %End environment
+    {
+        \end{bfseries}
+        \end{changemargin}
+        \par
+    }
+\newenvironment{mdh2}
+    %Begin environment
+    {
+        \begin{changemargin}{0cm}{0cm}
+        \begin{bfseries}
+        \setlength{\parskip}{1.2em}
+        \fontfamily{lmss}
+        \fontsize{1cm}{1em}
+        \selectfont
+    }
+    %End environment
+    {
+        \end{bfseries}
+        \end{changemargin}
+        \par
+    }
+\newenvironment{mdh3}
+    %Begin environment
+    {
+        \begin{changemargin}{0cm}{0cm}
+        \begin{bfseries}
+        \setlength{\parskip}{1.2em}
+        \fontfamily{lmss}
+        \fontsize{.8cm}{1em}
+        \selectfont
+    }
+    %End environment
+    {
+        \end{bfseries}
+        \end{changemargin}
+        \par
+    }
+\newenvironment{mdstyle}
+    %Begin environment
+    {
+        \setlength{\parskip}{1em}
+        \fontfamily{lmss}
+        \selectfont
+    }
+    %End environment
+    {
+        \par
+    }
+\author{William H. Knapp III}
+\title{Chi-Square Tests}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\maketitle
+
+\section{When to Use the Chi-Square}
+If your design compares two or more groups of people and the dependent
+variable is discrete (i.e. only takes on a few values), the Chi-Square
+test is probably what you need. For example, imagine that you have an
+experiment with an experimental group and a control group. Further
+imagine that the dependent variable is whether or not they agree with
+some statement. Here you have discrete independent and dependent
+variables. There are four possible combinations (i.e. control and
+agree, control and disagree, experimental and agree, and experimental
+and disagree), but each person only fits into one of those groups
+(e.g. control and disagree).
+
+\section{Displaying Data}
+When using the Chi-square test, it's typical to create a table that
+contains the number of observations that fit into each category. One
+variable's levels occur over different columns and the other variable's
+levels occur over over different rows. I'll show you how to create
+a quick table using R (in the RStudio environment, of course) that you
+can then take the data from and enter into a more nicely formatted
+table using a word processor (e.g. MS Word) or spreadsheet (e.g. MS
+Excel).
+
+Before we begin, however, it's important to do a couple of things.
+First we need to set the current working directory. Remember to do this
+open up the example or homework file you're working with, then click
+``Session,'' then ``Set Working Directory,'' and finally ``To Source
+File Location.'' Next we need to load up the data file we're going to
+use.
+
+<<eval=FALSE>>=
+dat<-read.csv(example4.csv)
+@
+
+<<echo=FALSE>>=
+set.seed(124)
+major<-rep(c("engineering", "psychology"),30)
+gender<-c(rbinom(30,1,.3), rbinom(30,1,.7))
+gender[gender==0]<-"female"
+gender[gender==1]<-"male"
+gender<-as.factor(gender)
+dat<-data.frame(major, gender)
+@
+
+As usual, I recommend checking out the structure of your data before you begin
+trying to analyze anything. We can see that the
+
+<<>>=
+str(dat)
+@
+
+Looking at the structure we can see that we have two variables that are
+both discrete factor variables with two levels each. We can also see
+that we have 60 observations for each of these variables.
+
+Now all we need to do is create a table for the data that shows how many
+people (i.e. frequncy data) fit into each category. So let's create a
+table using the table() function.
+
+<<>>=
+mytable<-table(dat$gender,dat$major)
+@
+
+Since we assigned the table to a variable, it didn't show up after the
+last command. To see the table, all we need to do is ask R to display
+it by entering mytable.
+
+<<>>=
+mytable
+@
+
+So the big question at this point is whether or not gender and major
+are independent of one another or related to each other. From looking
+at the table, there appears to be some relationship. Specifically, there
+are more male engineering majors and more female psychology majors. But
+we need to use statistics to back up or refute our intuition. To do
+this we'll use the chisq.test() function.
+
+<<>>=
+chisq.test(dat$gender,dat$major)
+@
+
+The output from the chi-square test tells us everything we need to
+know to create our statistical statement. Statistical statements take
+the following form:
+
+\begin{verbatim}
+TestSymbol(DegreesOfFreedom) = TestValue, p = p-value. 
+\end{verbatim}
+
+The p-value is probably the most important part of any data analysis
+as it tells you the probability of observing data as or more extreme
+as what you observed when the null hypothesis is true (e.g. they're
+unrelated or no different). By convention, we'll use the traditional
+alpha level of .05. When the p-value is less than or equal to .05,
+we reject the null hypothesis in favor of the alternative. In
+other words, you conclude that the data are related or that there is
+an effect of one variable on the other.
+
+According to the test I performed earlier, gender and major are unrelated
+$\chi^2$(1) = 2.4, p = .12.
+
+
+\end{document}

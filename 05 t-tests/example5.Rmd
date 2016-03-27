@@ -1,0 +1,157 @@
+## Example 5
+
+<!--
+Set the working directory.
+No Rchunk is needed to accomplish this.
+-->
+
+<!--
+Read in the example5.csv data. For each of the following steps you
+should preface your R commands with some plain English explanation.
+-->
+
+The first step is to read in the data.
+```{r}
+dat<-read.csv("example5.csv")
+```
+<!--
+Check the structure of the data.
+-->
+
+The next step is to check out the structure
+
+```{r}
+str(dat)
+```
+
+As we can see dat is a data frame with two variables: group and rt.
+
+<!--
+Find the mean response times for the experimental and control groups
+-->
+
+```{r}
+mean(dat$rt[dat$group=="experimental"])
+mean(dat$rt[dat$group=="control"])
+```
+
+NOTE: after I enter bits of code, I run the code or knit the document
+to see what the results were of my analyses. Thus, I'm going back and
+forth between running code and checking the output to make sure it
+appears correct.
+
+By looking at the means it appears that the experimental group
+completed the task faster than the control group.
+
+<!--
+Run an independent t-test to determine if the mean rt for the
+experimental group is different from the mean rt from the control
+group. Interpret the results of your analysis after you run it.
+-->
+
+Now I'll perform an independent t-test to see if my intuition was
+correct.
+
+```{r}
+t.test(dat$rt[dat$group=="control"],
+       dat$rt[dat$group=="experimental"],
+       var.equal=TRUE)
+```
+
+Examining the results of our t-test we can see that individuals in
+the experimental group performed the task quicker than individuals
+in the control group, t(48) = 3.15, p = .0028.
+
+<!--
+Run another independent t-test with the alternative hypothesis that
+the experimental group is faster than the control group. Interpret
+the results of your analyses.
+-->
+
+Now, I'll run an independent t-test with the alternative hypothesis
+that the experimental group is faster than the control group.
+
+```{r}
+t.test(dat$rt[dat$group=="control"],
+       dat$rt[dat$group=="experimental"],
+       var.equal=TRUE,
+       alternative="greater")
+```
+
+Examining the results of our t-test we can see that individuals in
+the experimental group performed the task quicker than individuals
+in the control group, t(48) = 3.15, p = .0014.
+<!--
+Create a bar graph of the data.
+-->
+
+In order to create a figure of the data, I need to load the
+ggplot2, gplots, and dplyr libraries.
+
+
+```{r}
+library(ggplot2)
+library(gplots)
+library(dplyr)
+```
+
+Next I need to use dplyr to summarize the data and find the means and
+standard errors of the means for the different groups.
+
+```{r}
+temp<-dat%>%group_by(group)%>%
+  summarize(means=mean(rt), sems=sd(rt)/sqrt(length(rt)))
+```
+
+Armed with the summarized data I can now create a figure of the data.
+
+```{r}
+f<-ggplot(temp,aes(x=factor(group),y=means))+
+  geom_bar(stat="identity", color="black",
+           fill=c("deepskyblue2", "deeppink"))+
+  geom_errorbar(aes(ymax=means+sems,
+                    ymin=means-sems),
+                width=.2)+
+  ggtitle("Response Times For the Groups")+
+  labs(x="Group", y="Response Time (ms)")+
+  scale_x_discrete(breaks=c("control","experimental"),
+                   labels=c("Control","Experimental"))+
+  theme(plot.title=element_text(size=15,
+                                face="bold",
+                                vjust=.5))+
+  theme(axis.title.x=element_text(size=12,
+                                  face="bold",
+                                  vjust=-.25))+
+  theme(axis.title.y=element_text(size=12,
+                                  face="bold",
+                                  vjust=.25))+
+  theme(axis.text.x=element_text(size=10,
+                                 face="bold",
+                                 color="black"))+
+  theme(axis.text.y=element_text(size=10,
+                                 face="bold",
+                                 color="black"))+
+  coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),
+                         max(temp$means)+2*max(temp$sems)))+
+  theme(panel.border=element_blank(),
+        axis.line=element_line())+
+  theme(panel.grid.major.x=element_blank())+
+  theme(panel.grid.major.y=element_line(color="darkgrey"))+
+  theme(panel.grid.minor.y=element_blank())
+f
+```
+
+<!--
+Conduct and interpret a two-tailed paired t-test on the data.
+-->
+
+```{r}
+t.test(dat$rt[dat$group=="control"],
+       dat$rt[dat$group=="experimental"],
+       var.equal=TRUE,
+       paired=TRUE)
+```
+
+Individuals in the experimental condition completed the task more
+quickly than individuals in the control condition, t(24) = 8.01,
+p < .05.

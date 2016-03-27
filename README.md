@@ -1,47 +1,55 @@
-#PSY 441 Senior Capstone Reproducibility and Statistics Assignment
+## Capstone Reproducibility Homework
 
-##Welcome
+### William H. Knapp III
 
-If you're a student in my PSY 441 class at [EOU](https://www.eou.edu/), congratulations.
-You found the project that you need to fork, edit, and push back up to Github.
+#### Eastern Oregon University
 
-If you're anyone else, that's cool too. Hopefully there's something of interest here
-for you.
+This github repository contains nearly everything you'll need to complete the
+homework you'll need to prepare to analyze your own data from your experiment.
 
-You'll find everything you need to completely reproduce this assignment, except for
-this README, in the data directory.
+Specifically, this repository contains the following directories and files.
 
-##Data Directory Contents
-
-* **politics.csv** The file you'll need to complete the homework
-assignment.
-
-* **Generation.Rmd** The file I used to create the data file.
-The data were generated in a fully reproducible way, so if you process Generation.Rmd on your own
-computer, you should be able to regenerate the file for yourself.
-
-* **Example.Rmd** A model for the homework assignment you'll
-need to complete. In it, I'll perform a number of the analyses and create the figures that you'll see
-later in this text. The primary difference between what you'll see in this text and what you'll see
-in the Example.Rmd file is that I walk you through things here, but I won't there.
-
-* **Homework.Rmd** The file you'll need to fill in to successfully complete the assignment before
-syncing it to your \href{https://github.com/knappsych/capstone-reproducibility}{fork of my project}.
-Homework.Rmd is bare bones, so I strongly recommend referring to Example.Rmd as you work through the
-problems.
-
-* **Codebook.Rmd** A file that explains what the variables
-in the data set are. You don't need to do anything to this file for this assignment, but it will be
-useful to use it as a template for the data for your own study in completing your capstone project.
-
-* **Reproducibility.pdf** The instructions / tutorial to complete the assignment.
-
-* **Reproducibility.Rnw** The file that was used to create Reproducibility.pdf
-inside RStudio. If you want to try for yourself, go for it, but you'll have to install LaTeX on your
-computer.
-
-* **imgs** A directory including all the images for this text.
-
-Cheers,
-
-[William](http://wknapp.com)
+1. Introduction
+  * introduction.pdf: the instructions for completing the first assignment.
+  * introduction.Rnw: the file I used to create introduction.pdf.
+2. Getting started with Git and RStudio.
+  * instructions.pdf: the instructions and descriptions you'll need to complete
+  the second assignment.
+  * instructions2.Rnw: the file I used to create instructions.pdf.
+  * example2.md: the file that can help you complete the homework.
+  * homework2.md: the file you'll need to complete to do the homework.
+3. Working with RStudio.
+  * instructions.pdf: the instructions and descriptions you'll need to complete
+  the third assignment
+  * instructions3.Rnw: the file I used to create instructions.pdf
+  * example3.Rmd: the file that can help you complete the homework.
+  * example3.csv: The data that goes along with the example.
+  * homework3.Rmd: the file you'll need to complete to do the homework.
+  * homework3.csv: The data that goes along with the homework.
+4. Chi-square tests.
+  * instructions.pdf: the instructions and descriptions you'll need to complete
+  the fourth assignment.
+  * instructions4.Rnw: the file I used to create instructions.pdf.
+  * example4.Rmd: the file that can help you complete the homework.
+  * example4.csv: The data that goes along with the example.
+  * homework4.Rmd: the file you'll need to complete to do the homework.
+  * homework4.csv: The data that goes along with the homework.
+5. t-tests.
+  * instructions.pdf: the instructions and descriptions you'll need to complete
+  the fifth assignment.
+  * instructions5.Rnw: the file I used to create instructions.pdf.
+  * example5.Rmd: the file that can help you complete the homework.
+  * example5.csv: The data that goes along with the example.
+  * homework5.Rmd: the file you'll need to complete to do the homework.
+  * homework5.csv: The data that goes along with the homework.
+ 6. ANOVAs.
+  * instructions.pdf: the instructions and descriptions you'll need to complete
+  the sixth assignment.
+  * instructions6.Rnw: the file I used to create instructions.pdf.
+  * example6.Rmd: the file that can help you complete the homework.
+  * example6.csv: The data that goes along with the example.
+  * homework6.Rmd: the file you'll need to complete to do the homework.
+  * homework6.csv: The data that goes along with the homework.
+7. Data Generation.
+  *generation.r: the file I used to create all the example and homework.csv
+  files.

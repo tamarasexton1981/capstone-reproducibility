@@ -1,0 +1,292 @@
+## Example 6
+
+<!--
+Set the working directory.
+No Rchunk is needed to accomplish this.
+-->
+
+<!--
+Read in the example6.csv data. For each of the following steps you
+should preface your R commands with some plain English explanation.
+-->
+
+The first step is to read in the data.
+```{r}
+dat<-read.csv("example6.csv")
+```
+<!--
+Check the structure of the data and change any variables that should
+be factor variables into factor variables
+-->
+
+The next step is to check out the structure
+
+```{r}
+str(dat)
+```
+
+From the structure we can see that position, subject, and subject2
+should all be factor variables. So let's fix that.
+
+```{r}
+dat$position<-as.factor(dat$position)
+dat$subject<-as.factor(dat$subject)
+dat$subject2<-as.factor(dat$subject2)
+```
+
+<!--
+Perform a one-way between-subjects ANOVA examining for effects of 
+the list position when participants have an intervening distractor
+task to perform before recalling the lists they just learned.
+Also create a line graph to help you interpret the results of your
+analysis.
+-->
+
+First we need to get only the data from the conjunction searches.
+
+```{r}
+temp<-dat[dat$distractor=="yes",]
+```
+
+Now we can run our ANOVA.
+
+```{r}
+summary(aov(percent~position, data=temp))
+```
+
+There's a significant effect of which position a word appears in on
+a list, F(9,110) = 16.3, p < .05. To interpret these data better,
+I'll create a line graph that shows the percent recalled for the
+various list positions when participants are distracted.
+
+```{r}
+library(ggplot2)
+library(gplots)
+library(dplyr)
+
+temp<-temp%>%group_by(position)%>%
+  summarize(means=mean(percent),
+            sems=sd(percent)/sqrt(length(percent)))
+
+f<-ggplot(temp, aes(x=as.factor(position),
+                    y=means,
+                    group=1))+
+  geom_line(size=1)+
+  geom_point(size=2)+
+  geom_errorbar(aes(ymax=means+sems,
+                    ymin=means-sems),
+                width=.2)+
+  ggtitle("Serial Position Effect")+
+  labs(x="List Position",y="Percent Recalled")+
+  theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
+  theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
+  theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
+  theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
+  theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
+  coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),
+                         max(temp$means)+2*max(temp$sems)))+
+  theme(panel.border=element_blank(),axis.line=element_line())+
+  theme(panel.grid.major.x=element_blank())+
+  theme(panel.grid.major.y=element_line(color="darkgrey"))+
+  theme(panel.grid.minor.y=element_blank())
+f
+```
+From the figure we can see that participants do the best on the
+words that occur at the beginning of the list and worst on the words
+that occur at the ending of the list.
+
+<!--
+Perform a one-way within subjects ANOVA on the same data you analyzed
+earlier. Tip: use subject as the subjects variable for this analysis.
+-->
+
+Because I changed temp, I don't have the same data I analyzed last
+time, so I'm going to reuse the code I first used to create temp
+so I can perform the appropriate analysis.
+
+```{r}
+temp<-dat[dat$distractor=="yes",]
+```
+
+Now I'll perform the within-subjects analysis.
+
+```{r}
+summary(aov(percent~position+
+              Error(subject/position),data=temp))
+```
+
+Participants performed better on earlier list positions than they
+did on later list positions, F(9,99) = 51.0, p = .05.
+
+<!--
+Perform a between-subjects ANOVA examining for the effects of and
+interactions between list position and whether or not the
+participants had an intervening distractor task before recalling
+the lists of words.
+-->
+
+Now, I'll perform a between-subjects 2-way ANOVA looking for effects
+of and interactions between list position and whether or not
+participants completed an intervening task.
+
+```{r}
+summary(aov(percent~position*distractor, data=dat))
+```
+
+The analyses show that there was an effect of position, F(9,220) =
+22.7, p < .05. There was also an effect of distractor, F(1,220) =
+31.3, p < .05. There was also an interaction between position and
+distractor, F(9,220) = 8.07, p < .05.
+
+<!--
+Create a line graph and a grouped bar graph to help us interpret
+the results of the previous analyses. Include error bars in your
+figures.
+-->
+
+To help me interpret the earlier analyses, I'll create line and
+grouped bar graphs for the data I analyzed. But first I need to
+summarize the data.
+
+```{r}
+temp<-dat%>%group_by(position,distractor)%>%
+  summarize(means=mean(percent),
+            sems=sd(percent)/sqrt(length(n)))
+```
+
+Now I can create the figures.
+
+```{r}
+f<-ggplot(temp, aes(x=position,
+                    y=means,
+                    group=distractor,
+                    color=distractor))+
+  geom_line(size=1)+
+  geom_point(size=2)+
+  scale_color_manual(values=c("darkgreen","red"),
+                     name="Distractor",
+                     breaks=c("no","yes"),
+                     labels=c("No", "Yes"))+
+  geom_errorbar(aes(ymax=means+sems, ymin=means-sems),width=.2)+
+  ggtitle("Serial Position With and Without Distraction")+
+  labs(x="List Position",y="Percent Recalled")+
+  theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
+  theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
+  theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
+  theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
+  theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
+  coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),
+                         max(temp$means)+2*max(temp$sems)))+
+  theme(panel.border=element_blank(),axis.line=element_line())+
+  theme(panel.grid.major.x=element_blank())+
+  theme(panel.grid.major.y=element_line(color="darkgrey"))+
+  theme(panel.grid.minor.y=element_blank())+
+  theme(legend.position=c(.4,.76))+
+  theme(legend.background=element_blank())+
+  theme(legend.background=element_rect(color="black"))+
+  theme(legend.title=element_blank())+
+  theme(legend.title=element_text(size=12))+
+  theme(legend.title.align=.5)+
+  theme(legend.text=element_text(size=10,face="bold"))
+f
+
+f<-ggplot(temp, aes(x=position,
+                    y=means,
+                    fill=distractor))+
+  geom_bar(stat="identity",position=position_dodge())+
+  scale_fill_manual(values=c("darkgreen","red"),
+                     name="Distractor",
+                     breaks=c("no","yes"),
+                     labels=c("No", "Yes"))+
+  geom_errorbar(aes(ymax=means+sems,
+                    ymin=means-sems),
+                width=.2,
+                position=position_dodge(.9))+
+  ggtitle("Serial Position With and Without Distraction")+
+  labs(x="List Position",y="Percent Recalled")+
+  theme(plot.title=element_text(size=15,face="bold",vjust=.5))+
+  theme(axis.title.x=element_text(size=12,face="bold",vjust=-.25))+
+  theme(axis.title.y=element_text(size=12,face="bold",vjust=1))+
+  theme(axis.text.x=element_text(size=10,face="bold",color="black"))+
+  theme(axis.text.y=element_text(size=10,face="bold",color="black"))+
+  coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),
+                         max(temp$means)+2*max(temp$sems)))+
+  theme(panel.border=element_blank(),axis.line=element_line())+
+  theme(panel.grid.major.x=element_blank())+
+  theme(panel.grid.major.y=element_line(color="darkgrey"))+
+  theme(panel.grid.minor.y=element_blank())+
+  theme(legend.position=c(.4,.76))+
+  theme(legend.background=element_blank())+
+  theme(legend.background=element_rect(color="black"))+
+  theme(legend.title=element_blank())+
+  theme(legend.title=element_text(size=12))+
+  theme(legend.title.align=.5)+
+  theme(legend.text=element_text(size=10,face="bold"))
+f
+```
+
+<!--
+Interpret the statistical results in light of the figures.
+-->
+
+From the figures and earlier analyses we can see that people
+generally perform best for the beginning and ending words in
+a list. We can also see that in general participants performed
+worse when they had an intervening distracting task. Most
+importantly, the interaction reveals that although individuals
+without intervening distracting tasks perform best on the earliest
+and latest list positions, those with the distractor tasks
+performed better on earlier positions than on later ones.
+
+<!--
+Perform a within-subjects two-way ANOVA examining for the effects
+of and interactions between list position and distraction. Tip:
+use subject as the subject's variable for this analysis. Interpret
+the results of the analysis based on the statistical results and
+your earlier figures.
+-->
+
+Here I'm performing a within-subjects two-way ANOVA to examine for
+the effects of and interactions between list position and
+distraction.
+
+```{r}
+summary(aov(percent~position*distractor+
+              Error(subject/(position*distractor)),
+                    data=dat))
+```
+
+From the analyses and the figures we can see that generally people
+perform best for the initial and later list positions, F(9,99) =
+71.3, p < .05. We can also see that people are generally more
+accurate to recall words when they don't have an intervening
+distractor tasks to complete, F(1,11) = 128.4, p < .05. Finally,
+we can see that those without a distractor task perform best for the
+words at the beginning and end of the lists while, those with a
+distractor task perform best for the initial words and worst for the
+ending words, F(9,99) = 20.2, p < .05.
+
+<!--
+Finally conduct and interpret the results of a mixed ANOVA in which
+position varies within subjects and distraction varies between
+subjects. Make sure to interpret your results. Tip: use subject2
+as your subject's variable for this analysis.
+-->
+
+Finally, I'll conduct a mixed ANOVA in which position varies within
+participants and distraction varies between participants.
+
+```{r}
+summary(aov(percent~position*distractor+
+              Error(subject2/position),
+            data=dat))
+```
+
+From our anlyses, we can see that individuals without distracting
+tasks performed better than those who had, F(1,22) = 4.6, p = .0429.
+Additionally, participants generally performed better on the words
+at the beginning and ends of the lists, F(9,198) = 63.3, p < .05.
+Finally, we can see that distracted individuals performed best on
+the initial words only while individuals who weren't distracted
+performed well on items at the beginning and end of the lists,
+F(9,198) = 22.5, p < .05.

@@ -1,0 +1,70 @@
+## Example 3
+
+<!--
+Set the working directory.
+No Rchunk is needed to accomplish this.
+-->
+
+<!--
+Read in the example3.csv data. For each of the following steps you
+should preface your R commands with some plain English explanation.
+-->
+
+The first step is to read in the data.
+```{r
+dat<-read.csv("example3.csv")
+```
+<!--
+Check the structure of the data.
+-->
+
+The next step is to check out the structure
+
+```{r}
+str(dat)
+```
+
+As we can see dat is a data frame with three variables: gender,
+political party affiliation, and support for some initiative.
+
+<!--
+Find the mean, median, and variance for the overall level of
+support.
+-->
+
+Now we'll find some basic summary statistics including the
+mean, median, and variance.
+
+```{r}
+mean(dat$support)
+median(dat$support)
+var(dat$support)
+```
+
+From the previous analyses, we can see that the mean level of
+support is 63.4, the median is 67.0, and the variance is 171.6.
+
+<!--
+Find the mean level of support for males only.
+-->
+
+Now, let's see what the mean level of support is for males.
+
+```{r}
+mean(dat$support[dat$gender=="male"])
+```
+
+Here we can see that the mean for males is 58.5.
+
+<!--
+Find the mean level of support for democratic females only.
+-->
+
+Now, let's see what the mean level of support is for democratic
+females.
+
+```{r}
+mean(dat$support[dat$gender=="female" & dat$party=="democrat"])
+```
+
+Here we can see that the mean for democratic females is 72.1.

@@ -1,0 +1,57 @@
+## Homework 5
+
+<!--
+Set the working directory.
+No Rchunk is needed to accomplish this.
+-->
+
+
+
+<!--
+Read in the homework5.csv data. For each of the following steps you
+should preface your R commands with some plain English explanation.
+The data are fabricated and include the number of words per minute
+that people can type when listening to no music and when listening
+to heavy metal.
+-->
+
+
+
+<!--
+Check the structure of the data.
+-->
+
+
+
+<!--
+Find the mean words per minute for the two groups.
+-->
+
+
+
+<!--
+Run an independent t-test to determine if the mean wpm for the
+no music group is different from the mean wpm from heavy metal
+group. Interpret the results of your analysis after you run it.
+-->
+
+
+
+<!--
+Run another independent t-test with the alternative hypothesis that
+the heavy metal group types faster than the no music group. Interpret
+the results of your analyses.
+-->
+
+
+
+<!--
+Create a bar graph of the data.
+-->
+
+
+
+<!--
+Conduct and interpret a two-tailed paired t-test on the data.
+-->
+
