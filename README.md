@@ -42,7 +42,7 @@ Specifically, this repository contains the following directories and files.
   * example5.csv: The data that goes along with the example.
   * homework5.Rmd: the file you'll need to complete to do the homework.
   * homework5.csv: The data that goes along with the homework.
- 6. ANOVAs.
+6. ANOVAs.
   * instructions.pdf: the instructions and descriptions you'll need to complete
   the sixth assignment.
   * instructions6.Rnw: the file I used to create instructions.pdf.
