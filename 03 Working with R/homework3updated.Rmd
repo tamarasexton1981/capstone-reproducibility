@@ -1,4 +1,4 @@
-## Homework 3
+## Homework 3 
 
 <!--
 You can use the example3.Rmd or other files to find examples
