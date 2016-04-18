@@ -11,7 +11,8 @@ with the appropriate variables for the homework.
 <!--
 Set the working directory.
 No Rchunk is needed to accomplish this.
--->
+-->go into your working directory and select the appropriate file (homework3.Rmd). Then go to session, set working directory, and source file.
+dat<-read.csv("homework3.Rmd")
 
 <!--
 Read in the homework3.csv data. For each of the following steps you
@@ -23,14 +24,17 @@ should preface your R commands with some plain English explanation.
 <!--
 Check the structure of the data.
 -->
-
+df$dat
 
 
 <!--
 Find the mean, median, and standard deviation using the sd() function
 for the overall level of conservatism.
--->
+-->--> mean(df$dat) 17.5
+sd(df$dat) 6.454972
+median(df$dat) 17.5
 
+I am going to push what I have and hopefully we can work through this tomorrow at some point.
 
 
 <!--
