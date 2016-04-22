@@ -7,42 +7,37 @@ urge you to copy and paste relevant code that you know works from my
 examples or instructions and then edit that code so you're working
 with the appropriate variables for the homework.
 -->
-
-<!--
-Set the working directory.
-No Rchunk is needed to accomplish this.
--->go into your working directory and select the appropriate file (homework3.Rmd). Then go to session, set working directory, and source file.
-dat<-read.csv("homework3.Rmd")
-
+go into your working directory and select the appropriate file (homework3.Rmd). Then go to session, set working directory, and source file.
+```{r}dat<-read.csv("homework3.Rmd")```
 <!--
 Read in the homework3.csv data. For each of the following steps you
 should preface your R commands with some plain English explanation.
 -->
-
-
-
 <!--
 Check the structure of the data.
 -->
-df$dat
-
-
+```{r}str(dat)```
+data.frame':	100 obs. of  3 variables:
+ $ major       : Factor w/ 2 levels "business","psychology": 2 2 2 2 2 2 2 2 2 2 ...
+ $ year        : Factor w/ 4 levels "freshman","junior",..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ conservatism: num  44.5 38.6 34.2 32.2 42.3 ...
+> 
 <!--
 Find the mean, median, and standard deviation using the sd() function
 for the overall level of conservatism.
--->--> mean(df$dat) 17.5
-sd(df$dat) 6.454972
-median(df$dat) 17.5
-
-I am going to push what I have and hopefully we can work through this tomorrow at some point.
-
+--> 
+```{r}mean(dat$conservatism)``` 52.29458
+```{r}sd(dat$conservatism)``` 19.75757
+```{r}median(dat$conservatism)``` 53.83231
 
 <!--
 Find the mean level of support for freshmen only.
 -->
-
-
+```{r}mean(dat$conservatism[dat$year=="freshman"])```
+47.50033
 
 <!--
 Find the mean level of support for male business students only.
 -->
+```{r}mean(dat$conservatism[dat$year=="freshman"&dat$major=="business"])```
+61.60146
