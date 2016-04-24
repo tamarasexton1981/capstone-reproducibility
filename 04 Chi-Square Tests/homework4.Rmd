@@ -12,25 +12,46 @@ with the appropriate variables for the homework.
 Set the working directory.
 No Rchunk is needed to accomplish this.
 -->
-
+ setwd("C:/Users/tamara/Desktop/Capstone Reproducibility/Git project")
 <!--
 Read in the homework4.csv data. For each of the following steps you
 should preface your R commands with some plain English explanation.
 -->
-
-
-
+```{r}
+ dat<-read.csv("homework4.csv")
+```
+This tells R to read the homework file
 <!--
 Check the structure of the data.
 -->
+```{r}
+ str(dat)
+ ```
+This shows us that there is 80 obs with two variables:
+condition factor with two levelss: control and experimental
+agreement factor with two levels: yes or no
 
 
-
-<!--
 Create a table that shows how many people fell into each category.
--->
 
+In order to create a table you must set seed and assign the variables numeric value
+```{r}
+ set.seed(124)
+```
+Then you create a table with the following command:
+```{r}
+ mytable<-table(dat$gender,dat$major)
+ ```
+ This creates the table, but to read it you need to enter:
+ ```{r}
+ mytable
+ ```
+This shows the table of our data:
 
+               no yes
+  control      20  20
+  experimental 14  26
+>
 
 <!--
 Perform a chi-square test to determine whether or not the experimental
@@ -40,4 +61,15 @@ statement that supports your interpretation. As there's no way to
 insert the chi-square symbol, you can just use chi-square instead
 (see example4.Rmd).
 -->
+```{r}
+ chisq.test(dat$condition,dat$agreement)
+```
+	Pearson's Chi-squared test with Yates' continuity
+	correction
+
+data:  dat$condition and dat$agreement
+X-squared = 1.2788, df = 1, p-value = 0.2581
+
+According to the data provided we would reject the null hypothesis that the data are related. There is not significant data to support that the experimental conditions are related to agreement with a statement.
+p = .26 and chisq = 1.28
 
