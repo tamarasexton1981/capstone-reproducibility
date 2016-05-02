@@ -4,7 +4,7 @@
 Set the working directory.
 No Rchunk is needed to accomplish this.
 -->
-
+To set the working directory, select homework5.csv under files, then choose session, set working directory, and finally, to file location.
 
 
 <!--
@@ -14,18 +14,34 @@ The data are fabricated and include the number of words per minute
 that people can type when listening to no music and when listening
 to heavy metal.
 -->
-
-
+Next, we need to tell R to read the file and set our seed.
+```{r}
+dat<-read.csv("homework5.csv")
+```
+```{r}
+set.seed(920)
+```
 
 <!--
 Check the structure of the data.
 -->
-
-
+Then, we will check the structure of the data
+```{r}
+str(dat)
+```
 
 <!--
 Find the mean words per minute for the two groups.
 -->
+To find the mean words per minute of the two groups, "music" and "none", you enter the following command:
+```{r}
+ mean(dat$wpm[dat$music=="metal"])
+ ```
+ ```{r}
+ mean(dat$wpm[dat$music=="none"])
+ ```
+ The mean words per minute for the metal group is 48.04, and the group without music is 42.45
+
 
 
 
@@ -34,6 +50,26 @@ Run an independent t-test to determine if the mean wpm for the
 no music group is different from the mean wpm from heavy metal
 group. Interpret the results of your analysis after you run it.
 -->
+Next, we will run a t test to see if the mean wpm's are different in the two groups
+```{r}
+t.test(dat$wpm[dat$music=="none"],
++        dat$wpm[dat$music=="metal"],
++        var.equal=TRUE)
+```
+This gives us an output of the following:
+Two Sample t-test
+
+data:  dat$wpm[dat$music == "none"] and dat$wpm[dat$music == "metal"]
+t = -2.3317, df = 62, p-value = 0.02298
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -10.3827312  -0.7977514
+sample estimates:
+mean of x mean of y 
+ 42.44641  48.03665 
+ This tells us that the mean wpm's are significantly different, as 
+ p < .05
+ 
 
 
 
@@ -42,16 +78,97 @@ Run another independent t-test with the alternative hypothesis that
 the heavy metal group types faster than the no music group. Interpret
 the results of your analyses.
 -->
+```{r}
+t.test(dat$wpm[dat$music=="none"],
++        dat$wpm[dat$music=="metal"],
++        var.equal=TRUE,
++        alternative="greater")
+```
+This gives us the following output:
+Two Sample t-test
 
+data:  dat$wpm[dat$music == "none"] and dat$wpm[dat$music == "metal"]
+t = -2.3317, df = 62, p-value = 0.9885
+alternative hypothesis: true difference in means is greater than 0
+95 percent confidence interval:
+ -9.59356      Inf
+sample estimates:
+mean of x mean of y 
+ 42.44641  48.03665 
+ This tells us that although the metal group typed faster than the no music group, the results were not significant
+ p = .99
 
 
 <!--
 Create a bar graph of the data.
 -->
-
-
-
+In order to create a bar graph, we first need to summarize the data using dplyr. The following command will execute this function:
+```{r}
+ temp<-dat%>%group_by(music)%>%
+  summarize(means=mean(wpm),
+            sems=sd(wpm)/sqrt(length(wpm)))
+```
+Then, to see the results, call temp to the console:
+```{r}
+> temp
+```
+Now that we have our data summarized we can begin to build our graph. 
+```{r}
+f<-ggplot(temp,aes(x=factor("music"),y=means))+
++     geom_bar(stat="identity", color="black",
++              fill=c("deepskyblue2", "deeppink"))+
++     geom_errorbar(aes(ymax=means+sems,
++                       ymin=means-sems),
++                   width=.2)+
++     ggtitle("Mean wpm for groups")+
++     labs(x="music", y="wpm")+
++     scale_x_discrete(breaks=c("metal","none"),
++                      labels=c("metal","none"))+
++     theme(plot.title=element_text(size=15,
++                                   face="bold",
++                                   vjust=.5))+
++     theme(axis.title.x=element_text(size=12,
++                                     face="bold",
++                                     vjust=-.25))+
++     theme(axis.title.y=element_text(size=12,
++                                     face="bold",
++                                     vjust=.25))+
++     theme(axis.text.x=element_text(size=10,
++                                    face="bold",
++                                    color="black"))+
++     theme(axis.text.y=element_text(size=10,
++                                    face="bold",
++                                    color="black"))+
++     coord_cartesian(ylim=c(min(temp$means)-2*max(temp$sems),
++                            max(temp$means)+2*max(temp$sems)))+
++     theme(panel.border=element_blank(),
++           axis.line=element_line())+
++     theme(panel.grid.major.x=element_blank())+
++     theme(panel.grid.major.y=element_line(color="darkgrey"))+
++     theme(panel.grid.minor.y=element_blank())
+```
 <!--
 Conduct and interpret a two-tailed paired t-test on the data.
 -->
+After inspecting our graph, we would like to run a two-tailed paired t-test on the data. The following command will do that for us:
+```{r}
+ t.test(dat$wpm[dat$music=="metal"],
++        dat$wpm[dat$music=="none"],
++        var.equal=TRUE,
++        paired=TRUE)
+```
+That gives us the following output:
 
+Paired t-test
+
+data:  dat$wpm[dat$music == "metal"] and dat$wpm[dat$music == "none"]
+t = 12.153, df = 31, p-value = 2.51e-13
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 4.652093 6.528390
+sample estimates:
+mean of the differences 
+               5.590241 
+
+The paired t test has more power than the individual t test, and the paired reveals that there is a difference between the two groups, with the metal group typing faster than the group with no music by about 5.6 wpm. 
+p < .05
